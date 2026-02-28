@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://storyforge-idls.onrender.com/",
+  baseURL: "https://storyforge-idls.onrender.com/api",
 });
 
 // Attach token dynamically for EVERY request
