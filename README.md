@@ -31,7 +31,6 @@ This project demonstrates end-to-end full-stack development, authentication syst
 
 * JWT-based authentication
 * Secure user registration and login
-* Auto-login after registration
 * Protected routes for dashboard and editing
 * Backend authorization middleware
 
