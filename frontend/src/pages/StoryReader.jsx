@@ -8,6 +8,9 @@ function StoryReader() {
   const [readChapters, setReadChapters] = useState([]);
   const [artifacts, setArtifacts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [revealedArtifacts, setRevealedArtifacts] = useState([]);
+
+  const revealedArtifactsKey = `storyforge-revealed-artifacts-${id}`;
 
   const fetchStory = async () => {
     try {
@@ -27,7 +30,28 @@ function StoryReader() {
     fetchStory();
   };
 
+  const revealArtifact = (artifactKey) => {
+    setRevealedArtifacts((currentArtifacts) => {
+      if (currentArtifacts.includes(artifactKey)) {
+        return currentArtifacts;
+      }
+
+      const updatedArtifacts = [...currentArtifacts, artifactKey];
+      localStorage.setItem(
+        revealedArtifactsKey,
+        JSON.stringify(updatedArtifacts)
+      );
+      return updatedArtifacts;
+    });
+  };
+
+  const isArtifactRevealed = (artifactKey) =>
+    revealedArtifacts.includes(artifactKey);
+
   useEffect(() => {
+    const savedArtifacts = localStorage.getItem(revealedArtifactsKey);
+    setRevealedArtifacts(savedArtifacts ? JSON.parse(savedArtifacts) : []);
+
     const loadStory = async () => {
       try {
         const res = await API.get(`/story/${id}`);
@@ -60,6 +84,26 @@ function StoryReader() {
     );
   }
 
+  const chapterArtifacts = story.chapters.flatMap((chapter) => {
+    if (!readChapters.includes(chapter.chapterNumber) || !chapter.artifacts) {
+      return [];
+    }
+
+    return chapter.artifacts.map((artifact, index) => ({
+      ...artifact,
+      artifactKey: `chapter-${chapter.chapterNumber}-${artifact._id || index}`,
+      chapterNumber: chapter.chapterNumber,
+    }));
+  });
+
+  const collectedArtifacts = [
+    ...chapterArtifacts,
+    ...artifacts.map((artifact) => ({
+      ...artifact,
+      artifactKey: `artifact-${artifact._id}`,
+    })),
+  ];
+
   return (
     <div className="archive-page">
       <header className="reader-header">
@@ -82,12 +126,29 @@ function StoryReader() {
 
               {readChapters.includes(ch.chapterNumber) &&
                 ch.artifacts &&
-                ch.artifacts.map((artifact, index) => (
-                  <div key={index} className="artifact">
-                    <strong>Relic Unlocked: {artifact.title}</strong>
-                    <p>{artifact.content}</p>
-                  </div>
-                ))}
+                ch.artifacts.map((artifact, index) => {
+                  const artifactKey = `chapter-${ch.chapterNumber}-${
+                    artifact._id || index
+                  }`;
+                  const revealed = isArtifactRevealed(artifactKey);
+
+                  return (
+                    <div key={artifactKey} className="artifact">
+                      <strong>{artifact.title}</strong>
+
+                      {revealed ? (
+                        <p>{artifact.content}</p>
+                      ) : (
+                        <button
+                          onClick={() => revealArtifact(artifactKey)}
+                          className="archive-button archive-button--primary"
+                        >
+                          Reveal Artifact
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
 
               {!readChapters.includes(ch.chapterNumber) && (
                 <button
@@ -105,16 +166,38 @@ function StoryReader() {
           <p className="archive-eyebrow">Relic cabinet</p>
           <h3>Artifacts</h3>
 
-          {artifacts.length === 0 && (
-            <p className="archive-copy">No artifacts have surfaced yet.</p>
+          {collectedArtifacts.length === 0 && (
+            <p className="archive-copy">
+              Artifacts will appear here after you finish chapters that contain
+              them.
+            </p>
           )}
 
-          {artifacts.map((a) => (
-            <div key={a._id} className="artifact">
-              <strong>{a.title}</strong>
-              <p>{a.content}</p>
-            </div>
-          ))}
+          {collectedArtifacts.map((a) => {
+            const revealed = isArtifactRevealed(a.artifactKey);
+
+            return (
+              <div key={a.artifactKey} className="artifact">
+                <strong>{a.title}</strong>
+                {a.chapterNumber && (
+                  <span className="artifact-meta">
+                    Chapter {a.chapterNumber}
+                  </span>
+                )}
+
+                {revealed ? (
+                  <p>{a.content}</p>
+                ) : (
+                  <button
+                    onClick={() => revealArtifact(a.artifactKey)}
+                    className="archive-button archive-button--primary"
+                  >
+                    Reveal Artifact
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </aside>
       </div>
     </div>

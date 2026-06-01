@@ -12,6 +12,45 @@ function EditStory() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [editingChapter, setEditingChapter] = useState(null);
+  const [expandedChapters, setExpandedChapters] = useState([]);
+  const [chapterSort, setChapterSort] = useState("newest");
+
+  const getSortedChapters = () => {
+    const chapters = [...story.chapters];
+
+    if (chapterSort === "oldest") {
+      return chapters;
+    }
+
+    if (chapterSort === "chapter-asc") {
+      return chapters.sort((a, b) => a.chapterNumber - b.chapterNumber);
+    }
+
+    if (chapterSort === "chapter-desc") {
+      return chapters.sort((a, b) => b.chapterNumber - a.chapterNumber);
+    }
+
+    return chapters.reverse();
+  };
+
+  const toggleChapterPreview = (chapterNumberToToggle) => {
+    setExpandedChapters((currentChapters) =>
+      currentChapters.includes(chapterNumberToToggle)
+        ? currentChapters.filter((num) => num !== chapterNumberToToggle)
+        : [...currentChapters, chapterNumberToToggle]
+    );
+  };
+
+  const getChapterPreview = (chapter) => {
+    const isExpanded = expandedChapters.includes(chapter.chapterNumber);
+    const isLong = chapter.content.length > 320;
+
+    if (isExpanded || !isLong) {
+      return chapter.content;
+    }
+
+    return `${chapter.content.slice(0, 320).trim()}...`;
+  };
 
   const fetchStory = async () => {
     const res = await API.get(`/story/${id}`);
@@ -100,13 +139,35 @@ function EditStory() {
 
       <div className="edit-layout">
         <section>
-          <p className="archive-eyebrow">Chapters</p>
+          <div className="chapter-toolbar">
+            <p className="archive-eyebrow">Chapters</p>
+
+            {story.chapters.length > 1 && (
+              <label className="chapter-sort">
+                <span>Sort by</span>
+                <select
+                  className="archive-input"
+                  value={chapterSort}
+                  onChange={(e) => setChapterSort(e.target.value)}
+                >
+                  <option value="newest">Newest added first</option>
+                  <option value="oldest">Oldest added first</option>
+                  <option value="chapter-asc">Chapter number: 1 to 9</option>
+                  <option value="chapter-desc">Chapter number: 9 to 1</option>
+                </select>
+              </label>
+            )}
+          </div>
 
           {story.chapters.length === 0 ? (
             <div className="archive-empty">No chapters yet.</div>
           ) : (
             <div className="chapter-editor-list">
-              {story.chapters.map((ch) => (
+              {getSortedChapters().map((ch) => {
+                const isLongChapter = ch.content.length > 320;
+                const isExpanded = expandedChapters.includes(ch.chapterNumber);
+
+                return (
                 <article
                   key={ch.chapterNumber}
                   className="chapter-editor-card archive-card"
@@ -114,7 +175,18 @@ function EditStory() {
                   <h3>
                     Chapter {ch.chapterNumber}: {ch.title}
                   </h3>
-                  <p className="archive-copy">{ch.content}</p>
+                  <p className="archive-copy chapter-preview">
+                    {getChapterPreview(ch)}
+                  </p>
+
+                  {isLongChapter && (
+                    <button
+                      onClick={() => toggleChapterPreview(ch.chapterNumber)}
+                      className="text-button"
+                    >
+                      {isExpanded ? "View less" : "View more"}
+                    </button>
+                  )}
 
                   <div className="archive-actions">
                     <button
@@ -178,7 +250,8 @@ function EditStory() {
                     </div>
                   )}
                 </article>
-              ))}
+                );
+              })}
             </div>
           )}
         </section>

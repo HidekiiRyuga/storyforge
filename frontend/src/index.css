@@ -176,6 +176,16 @@ button {
   color: #ffd8cd;
 }
 
+.text-button {
+  border: 0;
+  background: transparent;
+  color: var(--archive-gold-soft);
+  font-weight: 700;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 .archive-card {
   position: relative;
   overflow: hidden;
@@ -699,7 +709,20 @@ button {
 }
 
 .artifact strong {
+  display: block;
   color: #56380f;
+}
+
+.artifact .archive-button {
+  margin-top: 12px;
+}
+
+.artifact-meta {
+  display: block;
+  margin-top: 4px;
+  color: #7a6749;
+  font-size: 0.82rem;
+  font-weight: 700;
 }
 
 .artifact-panel {
@@ -724,6 +747,34 @@ button {
 .chapter-editor-list {
   display: grid;
   gap: 16px;
+}
+
+.chapter-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.chapter-toolbar .archive-eyebrow {
+  margin-bottom: 0;
+}
+
+.chapter-sort {
+  display: grid;
+  min-width: 230px;
+  gap: 6px;
+}
+
+.chapter-sort span {
+  color: var(--archive-gold-soft);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.chapter-preview {
+  white-space: pre-wrap;
 }
 
 .chapter-editor-card {
@@ -770,9 +821,14 @@ button {
   .dashboard-header,
   .stories-header,
   .reader-header,
-  .edit-header {
+  .edit-header,
+  .chapter-toolbar {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .chapter-sort {
+    width: 100%;
   }
 
   .site-nav__inner {

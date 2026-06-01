@@ -14,6 +14,24 @@ function Dashboard() {
     fetchMyStories();
   }, []);
 
+  const deleteStory = async (storyId) => {
+    const confirmed = window.confirm(
+      "Delete this story from the archive? This cannot be undone."
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await API.delete(`/story/${storyId}`);
+      setStories((currentStories) =>
+        currentStories.filter((story) => story._id !== storyId)
+      );
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete story");
+    }
+  };
+
   return (
     <div className="archive-page">
       <header className="dashboard-header">
@@ -46,6 +64,12 @@ function Dashboard() {
               <Link to={`/edit/${story._id}`} className="archive-button">
                 Edit Story
               </Link>
+              <button
+                onClick={() => deleteStory(story._id)}
+                className="archive-button archive-button--danger"
+              >
+                Delete Story
+              </button>
             </li>
           ))}
         </ul>
