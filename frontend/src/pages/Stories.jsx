@@ -9,7 +9,7 @@ function Stories() {
   useEffect(() => {
     const fetchStories = async () => {
       try {
-        const res = await API.get("/story"); // now returns ARRAY
+        const res = await API.get("/story");
         setStories(res.data);
       } catch (err) {
         console.error("Failed to load stories", err);
@@ -22,63 +22,53 @@ function Stories() {
   }, []);
 
   if (loading) {
-    return <p style={{ padding: 40 }}>Loading stories…</p>;
+    return (
+      <div className="archive-page">
+        <div className="archive-loading">Gathering stories from the stacks...</div>
+      </div>
+    );
   }
 
   if (stories.length === 0) {
-    return <p style={{ padding: 40 }}>No stories available.</p>;
+    return (
+      <div className="archive-page">
+        <div className="archive-empty">
+          No stories are available yet. The archive is quiet, but not for long.
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div style={styles.container}>
-      <h2>Stories</h2>
+    <div className="archive-page">
+      <header className="stories-header">
+        <div>
+          <p className="archive-eyebrow">Reading room</p>
+          <h1 className="archive-section-title">Tales in the archive</h1>
+          <p className="archive-copy">
+            Explore stories left by other travelers, writers, and keepers of
+            curious worlds.
+          </p>
+        </div>
+      </header>
 
-      <div style={styles.grid}>
+      <div className="archive-grid">
         {stories.map((story) => (
-          <div key={story._id} style={styles.card}>
-            <h3>{story.title}</h3>
-            <p>{story.description}</p>
+          <article key={story._id} className="story-card archive-card">
+            <div>
+              <div className="story-card__mark">✦</div>
+              <h3>{story.title}</h3>
+              <p>{story.description}</p>
+            </div>
 
-            <Link to={`/stories/${story._id}`} style={styles.readBtn}>
-              Read
+            <Link to={`/stories/${story._id}`} className="archive-button">
+              Open Tale
             </Link>
-          </div>
+          </article>
         ))}
       </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    padding: "40px",
-    minHeight: "80vh",
-    backgroundColor: "#0f0f0f", // dark background
-    color: "#ffffff",           // white text
-  },
-
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-    gap: "20px",
-    marginTop: "30px",
-  },
-
-  card: {
-    padding: "20px",
-    border: "1px solid #333",
-    background: "#111",
-  },
-
-  readBtn: {
-    display: "inline-block",
-    marginTop: "10px",
-    color: "#fff",
-    border: "1px solid #555",
-    padding: "6px 12px",
-    textDecoration: "none",
-  },
-};
-
 
 export default Stories;

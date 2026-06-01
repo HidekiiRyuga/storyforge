@@ -13,60 +13,56 @@ import StoryReader from "./pages/StoryReader";
 import CreateStory from "./pages/CreateStory";
 import EditStory from "./pages/EditStory";
 
-
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
+      <div className="app-shell">
+        <Navbar />
 
-      <Routes>
-        {/* Public */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <main className="archive-main">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-        {/* Protected */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-  path="/stories/:id"
-  element={
-    <ProtectedRoute>
-      <StoryReader />
-    </ProtectedRoute>
-  }
-/>
-<Route path="/stories" element={<Stories />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/stories/:id"
+              element={
+                <ProtectedRoute>
+                  <StoryReader />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/stories" element={<Stories />} />
+            <Route
+              path="/create"
+              element={
+                <ProtectedRoute>
+                  <CreateStory />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/edit/:id"
+              element={
+                <ProtectedRoute>
+                  <EditStory />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </main>
 
-<Route
-  path="/create"
-  element={
-    <ProtectedRoute>
-      <CreateStory />
-    </ProtectedRoute>
-  }
-/>
-<Route
-  path="/edit/:id"
-  element={
-    <ProtectedRoute>
-      <EditStory />
-    </ProtectedRoute>
-  }
-/>
-
-
-
-      </Routes>
-
-       
-      <Footer />
+        <Footer />
+      </div>
     </BrowserRouter>
   );
 }

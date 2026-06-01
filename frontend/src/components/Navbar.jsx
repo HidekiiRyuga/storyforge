@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function Navbar() {
@@ -11,64 +11,50 @@ function Navbar() {
   };
 
   return (
-    <nav style={styles.nav}>
-      <div style={styles.logo}>
-        <Link to="/" style={styles.link}>StoryForge</Link>
-      </div>
+    <nav className="site-nav">
+      <div className="site-nav__inner">
+        <Link to="/" className="site-nav__brand">
+          <span className="site-nav__sigil">✦</span>
+          StoryForge
+        </Link>
 
-      <div style={styles.links}>
-        <Link to="/" style={styles.link}>Home</Link>
-        <Link to="/stories" style={styles.link}>Read</Link>
+        <div className="site-nav__links">
+          <NavLink to="/" className="site-nav__link">
+            Archive
+          </NavLink>
+          <NavLink to="/stories" className="site-nav__link">
+            Read
+          </NavLink>
 
-        {isAuthenticated && (
-          <Link to="/create" style={styles.link}>Write</Link>
-        )}
+          {isAuthenticated && (
+            <NavLink to="/create" className="site-nav__link">
+              Write
+            </NavLink>
+          )}
 
-        {!isAuthenticated ? (
-          <>
-            <Link to="/login" style={styles.link}>Login</Link>
-            <Link to="/register" style={styles.link}>Register</Link>
-          </>
-        ) : (
-          <>
-            <Link to="/dashboard" style={styles.link}>Dashboard</Link>
-            <button onClick={handleLogout} style={styles.button}>Logout</button>
-          </>
-        )}
+          {!isAuthenticated ? (
+            <>
+              <NavLink to="/login" className="site-nav__link">
+                Login
+              </NavLink>
+              <NavLink to="/register" className="site-nav__link">
+                Join
+              </NavLink>
+            </>
+          ) : (
+            <>
+              <NavLink to="/dashboard" className="site-nav__link">
+                Desk
+              </NavLink>
+              <button onClick={handleLogout} className="site-nav__button">
+                Leave
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );
 }
-
-
-const styles = {
-  nav: {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "16px 32px",
-    background: "#0f0f0f",
-    borderBottom: "1px solid #222",
-  },
-  logo: {
-    fontSize: "20px",
-    fontWeight: "bold",
-  },
-  links: {
-    display: "flex",
-    gap: "20px",
-    alignItems: "center",
-  },
-  link: {
-    color: "#fff",
-    textDecoration: "none",
-  },
-  button: {
-    background: "transparent",
-    border: "1px solid #555",
-    color: "#fff",
-    padding: "6px 12px",
-    cursor: "pointer",
-  },
-};
 
 export default Navbar;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import API from "../api";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function Register() {
@@ -8,7 +8,7 @@ function Register() {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-  const { login } = useAuth(); // 👈 same as login page
+  const { login } = useAuth();
 
   const handleRegister = async () => {
     try {
@@ -17,12 +17,8 @@ function Register() {
         password,
       });
 
-      // 👇 automatically log user in
       login(res.data.token);
-
-      // 👇 go straight to dashboard
       navigate("/dashboard");
-
     } catch (err) {
       console.error(err);
       alert("Registration failed");
@@ -30,25 +26,53 @@ function Register() {
   };
 
   return (
-    <div style={{ padding: 40 }}>
-      <h2>Register</h2>
+    <div className="auth-page">
+      <section className="auth-card archive-card">
+        <div className="auth-card__intro">
+          <p className="archive-eyebrow">New keeper</p>
+          <h1 className="archive-section-title">Join StoryForge</h1>
+          <p className="archive-copy">
+            Claim a desk in the archive and begin crafting worlds readers can
+            wander through.
+          </p>
+        </div>
 
-      <input
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <br />
+        <div className="archive-form">
+          <div className="archive-field">
+            <label htmlFor="register-email">Email</label>
+            <input
+              id="register-email"
+              className="archive-input"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <br />
+          <div className="archive-field">
+            <label htmlFor="register-password">Password</label>
+            <input
+              id="register-password"
+              className="archive-input"
+              type="password"
+              placeholder="Create a secret key"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
 
-      <button onClick={handleRegister}>Register</button>
+          <button
+            onClick={handleRegister}
+            className="archive-button archive-button--primary"
+          >
+            Open My Desk
+          </button>
+        </div>
+
+        <p className="auth-switch">
+          Already have a pass? <Link to="/login">Return to the archive</Link>
+        </p>
+      </section>
     </div>
   );
 }

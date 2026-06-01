@@ -15,60 +15,43 @@ function Dashboard() {
   }, []);
 
   return (
-    <div style={{ padding: 40 }}>
-      <h2>Your Stories</h2>
+    <div className="archive-page">
+      <header className="dashboard-header">
+        <div>
+          <p className="archive-eyebrow">Author desk</p>
+          <h1 className="archive-section-title">Your written worlds</h1>
+          <p className="archive-copy">
+            Return to the stories you are shaping, add new chapters, and tuck
+            artifacts where curious readers will find them.
+          </p>
+        </div>
 
-      <Link to="/create" style={styles.createBtn}>
-        + Create New Story
-      </Link>
+        <Link to="/create" className="archive-button archive-button--primary">
+          Create New Story
+        </Link>
+      </header>
 
       {stories.length === 0 ? (
-        <p>You haven’t written any stories yet.</p>
+        <div className="archive-empty">
+          You have not written any stories yet. The archive has a fresh shelf
+          waiting for your first adventure.
+        </div>
       ) : (
-      <ul>
-  {stories.map((story) => (
-    <li key={story._id} style={styles.storyItem}>
-      <strong>{story.title}</strong>
-      <p>{story.description}</p>
+        <ul className="dashboard-list">
+          {stories.map((story) => (
+            <li key={story._id} className="dashboard-story archive-card">
+              <strong>{story.title}</strong>
+              <p className="archive-copy">{story.description}</p>
 
-      <Link to={`/edit/${story._id}`} style={styles.editBtn}>
-        Edit Story
-      </Link>
-    </li>
-  ))}
-</ul>
-
-
+              <Link to={`/edit/${story._id}`} className="archive-button">
+                Edit Story
+              </Link>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
 }
-
-const styles = {
-  createBtn: {
-    display: "inline-block",
-  marginBottom: "20px",
-  padding: "10px 16px",
-  background: "#111",
-  color: "#fff",
-  border: "1px solid #333",
-  textDecoration: "none",
-  },
-  storyItem: {
-    marginBottom: "15px",
-    borderBottom: "1px solid #333",
-    paddingBottom: "10px",
-  },
-  editBtn: {
-  display: "inline-block",
-  marginTop: "8px",
-  padding: "6px 12px",
-  background: "#111",
-  color: "#fff",
-  border: "1px solid #333",
-  textDecoration: "none",
-}
-
-};
 
 export default Dashboard;

@@ -11,30 +11,58 @@ function CreateStory() {
     try {
       await API.post("/story", { title, description });
       navigate("/dashboard");
-    } catch (err) {
+    } catch {
       alert("Failed to create story");
     }
   };
 
   return (
-    <div style={{ padding: 40 }}>
-      <h2>Create New Story</h2>
+    <div className="archive-page archive-page--narrow">
+      <header className="edit-header">
+        <div>
+          <p className="archive-eyebrow">New manuscript</p>
+          <h1 className="archive-section-title">Begin a story</h1>
+          <p className="archive-copy">
+            Give the archive a title and a promise of the adventure waiting
+            inside.
+          </p>
+        </div>
+      </header>
 
-      <input
-        placeholder="Story title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <br /><br />
+      <div className="archive-card chapter-editor-card">
+        <div className="archive-form">
+          <div className="archive-field">
+            <label htmlFor="story-title">Story title</label>
+            <input
+              id="story-title"
+              className="archive-input"
+              placeholder="The Lantern Under Briar Hill"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
 
-      <textarea
-        placeholder="Short description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      <br /><br />
+          <div className="archive-field">
+            <label htmlFor="story-description">Short description</label>
+            <textarea
+              id="story-description"
+              className="archive-textarea"
+              placeholder="A glimpse of the mystery, journey, or world readers will enter."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
 
-      <button onClick={handleCreate}>Publish Story</button>
+          <div className="archive-actions">
+            <button
+              onClick={handleCreate}
+              className="archive-button archive-button--primary"
+            >
+              Publish Story
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -33,6 +33,30 @@ router.post("/", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Failed to create story" });
   }
 });
+
+// Delete a story owned by the logged-in author
+router.delete("/:id", authMiddleware, async (req, res) => {
+  try {
+    const story = await Story.findById(req.params.id);
+
+    if (!story) {
+      return res.status(404).json({ message: "Story not found" });
+    }
+
+    if (story.author.toString() !== req.userId) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    await Artifact.deleteMany({ storyId: story._id });
+    await Story.deleteOne({ _id: story._id });
+
+    res.json({ message: "Story deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to delete story" });
+  }
+});
+
 /**
  * GET all stories (for /stories page)
  */

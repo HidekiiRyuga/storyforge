@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import API from "../api";
 
 function StoryReader() {
-  const { id } = useParams(); // story ID from URL
+  const { id } = useParams();
   const [story, setStory] = useState(null);
   const [readChapters, setReadChapters] = useState([]);
   const [artifacts, setArtifacts] = useState([]);
@@ -11,7 +11,7 @@ function StoryReader() {
 
   const fetchStory = async () => {
     try {
-      const res = await API.get(`/story/${id}`); //  CORRECT ENDPOINT
+      const res = await API.get(`/story/${id}`);
       setStory(res.data.story);
       setReadChapters(res.data.readChapters);
       setArtifacts(res.data.artifacts);
@@ -28,87 +28,97 @@ function StoryReader() {
   };
 
   useEffect(() => {
-    fetchStory();
+    const loadStory = async () => {
+      try {
+        const res = await API.get(`/story/${id}`);
+        setStory(res.data.story);
+        setReadChapters(res.data.readChapters);
+        setArtifacts(res.data.artifacts);
+      } catch (err) {
+        console.error("Failed to load story", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadStory();
   }, [id]);
 
   if (loading) {
-    return <p style={{ padding: 40 }}>Loading story…</p>;
+    return (
+      <div className="archive-page archive-page--narrow">
+        <div className="archive-loading">Opening the story...</div>
+      </div>
+    );
   }
 
   if (!story) {
-    return <p style={{ padding: 40 }}>Story not found.</p>;
+    return (
+      <div className="archive-page archive-page--narrow">
+        <div className="archive-empty">Story not found.</div>
+      </div>
+    );
   }
 
   return (
-    <div style={styles.container}>
-      <h1>{story.title}</h1>
-      <p style={styles.desc}>{story.description}</p>
-
-      {story.chapters.map((ch) => (
-  <div key={ch.chapterNumber} style={styles.chapter}>
-    
-    {/*  SHOW CHAPTER NUMBER + TITLE */}
-    <h3>
-      Chapter {ch.chapterNumber}: {ch.title}
-    </h3>
-
-    <p>{ch.content}</p>
-
-        {readChapters.includes(ch.chapterNumber) &&
-      ch.artifacts &&
-      ch.artifacts.map((artifact, index) => (
-        <div key={index} style={styles.artifact}>
-          <strong>🔓 {artifact.title}</strong>
-          <p>{artifact.content}</p>
+    <div className="archive-page">
+      <header className="reader-header">
+        <div>
+          <p className="archive-eyebrow">Reader alcove</p>
+          <h1 className="archive-section-title">{story.title}</h1>
+          <p className="archive-copy">{story.description}</p>
         </div>
-      ))
-    }
+      </header>
 
-    {!readChapters.includes(ch.chapterNumber) && (
-      <button onClick={() => markRead(ch.chapterNumber)}>
-        Continue
-      </button>
-    )}
-    
-  </div>
-))}
+      <div className="reader-layout">
+        <article className="reader-scroll archive-card">
+          {story.chapters.map((ch) => (
+            <section key={ch.chapterNumber} className="chapter">
+              <h3>
+                Chapter {ch.chapterNumber}: {ch.title}
+              </h3>
 
-      <h3>Artifacts</h3>
-      {artifacts.length === 0 && <p>No artifacts yet.</p>}
-      {artifacts.map((a) => (
-        <div key={a._id} style={styles.artifact}>
-          <strong>{a.title}</strong>
-          <p>{a.content}</p>
-        </div>
-      ))}
+              <p>{ch.content}</p>
+
+              {readChapters.includes(ch.chapterNumber) &&
+                ch.artifacts &&
+                ch.artifacts.map((artifact, index) => (
+                  <div key={index} className="artifact">
+                    <strong>Relic Unlocked: {artifact.title}</strong>
+                    <p>{artifact.content}</p>
+                  </div>
+                ))}
+
+              {!readChapters.includes(ch.chapterNumber) && (
+                <button
+                  onClick={() => markRead(ch.chapterNumber)}
+                  className="archive-button archive-button--primary"
+                >
+                  Continue
+                </button>
+              )}
+            </section>
+          ))}
+        </article>
+
+        <aside className="artifact-panel archive-card">
+          <p className="archive-eyebrow">Relic cabinet</p>
+          <h3>Artifacts</h3>
+
+          {artifacts.length === 0 && (
+            <p className="archive-copy">No artifacts have surfaced yet.</p>
+          )}
+
+          {artifacts.map((a) => (
+            <div key={a._id} className="artifact">
+              <strong>{a.title}</strong>
+              <p>{a.content}</p>
+            </div>
+          ))}
+        </aside>
+      </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    padding: "60px",
-    maxWidth: "700px",
-    margin: "auto",
-  },
-  desc: {
-    color: "#aaa",
-    marginBottom: "40px",
-  },
-  chapter: {
-    marginBottom: "30px",
-  },
-  /*artifact: {
-    border: "1px dashed #555",
-    padding: "15px",
-    marginBottom: "10px",
-  },*/
-  artifact: {
-  border: "1px dashed #555",
-  padding: "10px",
-  marginTop: "10px",
-  background: "#111",
-},
-};
 
 export default StoryReader;
