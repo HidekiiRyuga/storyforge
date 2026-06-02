@@ -214,7 +214,10 @@ router.post("/:id/chapter/:chapterNumber/artifact", authMiddleware, async (req, 
       return res.status(404).json({ message: "Chapter not found" });
     }
 
-    chapter.artifacts.push({ title, content });
+    chapter.artifact = {
+  title,
+  content,
+};
 
     const chapter = story.chapters.find(
   (ch) => ch.chapterNumber === Number(req.params.chapterNumber)
