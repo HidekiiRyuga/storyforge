@@ -168,6 +168,7 @@ router.put("/:id/chapter/:chapterNumber", authMiddleware, async (req, res) => {
       return res.status(403).json({ message: "Not authorized" });
     }
 
+    console.log("REQUESTED CHAPTER:", req.params.chapterNumber);
     // find chapter
     const chapter = story.chapters.find(
       (ch) => ch.chapterNumber === Number(req.params.chapterNumber)
