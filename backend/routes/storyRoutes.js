@@ -219,25 +219,6 @@ router.post("/:id/chapter/:chapterNumber/artifact", authMiddleware, async (req, 
   content,
 };
 
-    const chapter = story.chapters.find(
-  (ch) => ch.chapterNumber === Number(req.params.chapterNumber)
-);
-
-console.log("URL CHAPTER:", req.params.chapterNumber);
-
-console.log(
-  "ALL CHAPTERS:",
-  story.chapters.map(ch => ch.chapterNumber)
-);
-
-console.log(
-  "FOUND CHAPTER:",
-  chapter?.chapterNumber
-);
-
-if (!chapter) {
-  return res.status(404).json({ message: "Chapter not found" });
-}
 
     await story.save();
 
