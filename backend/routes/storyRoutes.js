@@ -1,7 +1,6 @@
 import express from "express";
 import Story from "../models/Story.js";
 import User from "../models/User.js";
-import Artifact from "../models/Artifact.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -46,8 +45,6 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     if (story.author.toString() !== req.userId) {
       return res.status(403).json({ message: "Not authorized" });
     }
-
-    await Artifact.deleteMany({ storyId: story._id });
     await Story.deleteOne({ _id: story._id });
 
     res.json({ message: "Story deleted successfully" });
@@ -84,7 +81,9 @@ router.get("/:id", authMiddleware, async (req, res) => {
 
     story.chapters.forEach((chapter) => {
       if (user.readChapters.includes(chapter.chapterNumber)) {
-        unlockedArtifacts.push(...chapter.artifacts);
+        if (chapter.artifact) {
+        unlockedArtifacts.push(chapter.artifact);
+      }
       }
     });
 
