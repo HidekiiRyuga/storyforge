@@ -78,16 +78,13 @@ router.get("/:id", authMiddleware, async (req, res) => {
     if (!story || !user) {
       return res.status(404).json({ message: "Not found" });
     }
-    const unlockedArtifacts = [];
-
-    story.chapters.forEach((chapter) => {
-      if (user.readChapters.includes(chapter.chapterNumber)) {
-        if (chapter.artifact) {
-        unlockedArtifacts.push(chapter.artifact);
-      }
-      }
+   const unlockedArtifacts = await Artifact.find({
+      storyId: story._id,
+      unlockChapter: {
+        $in: user.readChapters,
+      },
     });
-
+    
 
     res.json({
       story,
@@ -222,12 +219,7 @@ router.post("/:id/chapter/:chapterNumber/artifact", authMiddleware, async (req, 
       storyId: story._id,
     });
 
-    console.log("ABOUT TO SAVE ARTIFACT");
-console.log(artifact);
-
     await artifact.save();
-
-    console.log("ARTIFACT SAVED");
 
     res.status(201).json({
       message: "Artifact created",
