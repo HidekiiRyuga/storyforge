@@ -15,6 +15,7 @@ function EditStory() {
   const [expandedChapters, setExpandedChapters] = useState([]);
   const [chapterSort, setChapterSort] = useState("newest");
   const [artifacts, setArtifacts] = useState([]);
+  const [editingArtifact, setEditingArtifact] = useState(null);
 
   const getSortedChapters = () => {
     const chapters = [...story.chapters];
@@ -138,6 +139,18 @@ const deleteArtifact = async (artifactId) => {
   alert("Failed to delete artifact");
 }
 };
+const updateArtifact = async () => {
+  await API.put(
+    `/story/artifact/${editingArtifact._id}`,
+    {
+      title: artifactTitle,
+      content: artifactContent,
+    }
+  );
+
+  setEditingArtifact(null);
+  fetchArtifacts();
+};
   if (!story) {
     return (
       <div className="archive-page archive-page--narrow">
@@ -218,6 +231,34 @@ const deleteArtifact = async (artifactId) => {
                     >
                       <strong>🔮 {artifact.title}</strong>
                       <p>{artifact.content}</p>
+                      <button
+                      onClick={() => {
+                          setEditingArtifact(artifact);
+                          setArtifactTitle(artifact.title);
+                          setArtifactContent(artifact.content);
+                        }}
+                    >
+                      Edit Artifact
+                    </button>
+                    {editingArtifact?._id === artifact._id && (
+                    <div>
+                      <input
+                        value={artifactTitle}
+                        onChange={(e) => setArtifactTitle(e.target.value)}
+                      />
+
+                      <textarea
+                        value={artifactContent}
+                        onChange={(e) => setArtifactContent(e.target.value)}
+                      />
+
+                      <button
+                        onClick={updateArtifact}
+                      >
+                        Save Changes
+                      </button>
+                    </div>
+                  )}
 
                       <button
                   onClick={() => deleteArtifact(artifact._id)}

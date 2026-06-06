@@ -9,6 +9,7 @@ function StoryReader() {
   const [artifacts, setArtifacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [revealedArtifacts, setRevealedArtifacts] = useState([]);
+  const [editingArtifact, setEditingArtifact] = useState(null);
 
   const revealedArtifactsKey = `storyforge-revealed-artifacts-${id}`;
 

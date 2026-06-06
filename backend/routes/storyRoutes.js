@@ -251,6 +251,7 @@ router.get("/:id/artifacts", authMiddleware, async (req, res) => {
     });
   }
 });
+//DELETE ARTIFACT
 router.delete("/artifact/:artifactId", authMiddleware, async (req, res) => {
   try {
     const artifact = await Artifact.findById(req.params.artifactId);
@@ -288,7 +289,40 @@ router.delete("/artifact/:artifactId", authMiddleware, async (req, res) => {
     });
   }
 });
+router.put("/artifact/:artifactId", authMiddleware, async (req, res) => {
+  try {
+    const { title, content } = req.body;
 
+    const artifact = await Artifact.findById(req.params.artifactId);
+
+    if (!artifact) {
+      return res.status(404).json({
+        message: "Artifact not found",
+      });
+    }
+
+    const story = await Story.findById(artifact.storyId);
+
+    if (story.author.toString() !== req.userId) {
+      return res.status(403).json({
+        message: "Not authorized",
+      });
+    }
+
+    artifact.title = title;
+    artifact.content = content;
+
+    await artifact.save();
+
+    res.json(artifact);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "Failed to update artifact",
+    });
+  }
+});
 
 
 export default router;
