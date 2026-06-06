@@ -9,12 +9,6 @@ const storySchema = new mongoose.Schema(
     chapterNumber: Number,
     title: String,
     content: String,
-
-    artifacts: 
-      {
-        title: String,
-        content: String,
-      },
   },
 ],
 

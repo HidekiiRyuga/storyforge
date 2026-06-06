@@ -214,15 +214,24 @@ router.post("/:id/chapter/:chapterNumber/artifact", authMiddleware, async (req, 
       return res.status(404).json({ message: "Chapter not found" });
     }
 
-    chapter.artifact = {
-  title,
-  content,
-};
+    const artifact = new Artifact({
+      title,
+      content,
+      unlockChapter: Number(req.params.chapterNumber),
+      storyId: story._id,
+    });
 
+    console.log("ABOUT TO SAVE ARTIFACT");
+console.log(artifact);
 
-    await story.save();
+    await artifact.save();
 
-    res.json(story);
+    console.log("ARTIFACT SAVED");
+
+    res.status(201).json({
+      message: "Artifact created",
+      artifact,
+    });
 
   } catch (err) {
     console.error(err);
