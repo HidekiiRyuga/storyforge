@@ -14,6 +14,7 @@ function EditStory() {
   const [editingChapter, setEditingChapter] = useState(null);
   const [expandedChapters, setExpandedChapters] = useState([]);
   const [chapterSort, setChapterSort] = useState("newest");
+  const [artifacts, setArtifacts] = useState([]);
 
   const getSortedChapters = () => {
     const chapters = [...story.chapters];
@@ -58,14 +59,13 @@ function EditStory() {
   };
 
   useEffect(() => {
-    const loadStory = async () => {
-      const res = await API.get(`/story/${id}`);
-      setStory(res.data.story);
+    const loadData = async () => {
+      await fetchStory();
+      await fetchArtifacts();
     };
 
-    loadStory();
+    loadData();
   }, [id]);
-
   const handleSaveChapter = async () => {
     try {
       if (editingChapter) {
@@ -102,11 +102,16 @@ function EditStory() {
       title: artifactTitle,
       content: artifactContent,
     });
-
+    await fetchArtifacts();
+    
     setArtifactTitle("");
     setArtifactContent("");
     setSelectedChapter(null);
     fetchStory();
+  };
+  const fetchArtifacts = async () => {
+    const res = await API.get(`/story/${id}/artifacts`);
+    setArtifacts(res.data);
   };
 
   const startEditingChapter = (chapter) => {
@@ -175,6 +180,25 @@ function EditStory() {
                   <h3>
                     Chapter {ch.chapterNumber}: {ch.title}
                   </h3>
+                  {artifacts
+                  .filter(
+                    (artifact) =>
+                      artifact.unlockChapter === ch.chapterNumber
+                  )
+                  .map((artifact) => (
+                    <div
+                      key={artifact._id}
+                      style={{
+                        marginTop: "10px",
+                        padding: "10px",
+                        border: "1px solid #444",
+                        borderRadius: "8px",
+                      }}
+                    >
+                      <strong>🔮 {artifact.title}</strong>
+                      <p>{artifact.content}</p>
+                    </div>
+                  ))}
                   <p className="archive-copy chapter-preview">
                     {getChapterPreview(ch)}
                   </p>

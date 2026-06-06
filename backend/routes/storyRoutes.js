@@ -239,6 +239,22 @@ console.log(artifact);
     res.status(500).json({ message: "Failed to add artifact" });
   }
 });
+//get artifacts for a story
+router.get("/:id/artifacts", authMiddleware, async (req, res) => {
+  try {
+    const artifacts = await Artifact.find({
+      storyId: req.params.id,
+    });
+
+    res.json(artifacts);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "Failed to fetch artifacts",
+    });
+  }
+});
 
 
 
