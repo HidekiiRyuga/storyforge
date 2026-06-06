@@ -79,12 +79,12 @@ router.get("/:id", authMiddleware, async (req, res) => {
       return res.status(404).json({ message: "Not found" });
     }
    const unlockedArtifacts = await Artifact.find({
-      storyId: story._id,
-      unlockChapter: {
-        $in: user.readChapters,
-      },
-    });
-    
+    storyId: story._id,
+    unlockChapter: {
+      $in: user.readChapters,
+    },
+  }).sort({ unlockChapter: 1 });
+      
 
     res.json({
       story,

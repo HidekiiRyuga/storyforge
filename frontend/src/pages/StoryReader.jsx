@@ -96,10 +96,12 @@ function StoryReader() {
       chapterNumber: chapter.chapterNumber,
     }));
 
-    const collectedArtifacts = artifacts.map((artifact) => ({
-    ...artifact,
-    artifactKey: `artifact-${artifact._id}`,
-  }));
+    const collectedArtifacts = [...artifacts]
+    .sort((a, b) => a.unlockChapter - b.unlockChapter)
+    .map((artifact) => ({
+      ...artifact,
+      artifactKey: `artifact-${artifact._id}`,
+    }));
   const highestReadChapter =
   readChapters.length > 0
     ? Math.max(...readChapters)
