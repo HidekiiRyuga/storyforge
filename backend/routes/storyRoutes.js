@@ -3,6 +3,7 @@ import Story from "../models/Story.js";
 import User from "../models/User.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import Artifact from "../models/Artifact.js";
+import Progress from "../models/Progress.js";
 
 const router = express.Router();
 
@@ -73,22 +74,25 @@ router.get("/", authMiddleware, async (req, res) => {
 router.get("/:id", authMiddleware, async (req, res) => {
   try {
     const story = await Story.findById(req.params.id);
-    const user = await User.findById(req.userId);
+    const progress = await Progress.findOne({
+      userId: req.userId,
+      storyId: req.params.id,
+    });
 
-    if (!story || !user) {
+    if (!story) {
       return res.status(404).json({ message: "Not found" });
     }
    const unlockedArtifacts = await Artifact.find({
     storyId: story._id,
     unlockChapter: {
-      $in: user.readChapters,
-    },
+      $in: progress?.readChapters || [],
+    }
   }).sort({ unlockChapter: 1 });
       
 
     res.json({
       story,
-      readChapters: user.readChapters,
+      readChapters: progress?.readChapters || [],
       artifacts: unlockedArtifacts,
     });
   } catch (err) {

@@ -26,7 +26,11 @@ function StoryReader() {
   };
 
   const markRead = async (chapterNumber) => {
-    await API.post("/progress/read", { chapterNumber });
+    await API.post("/progress/read", {
+      storyId: id,
+      chapterNumber,
+    });
+
     fetchStory();
   };
 
@@ -83,18 +87,6 @@ function StoryReader() {
       </div>
     );
   }
-
-  const chapterArtifacts = story.chapters
-    .filter(
-      (chapter) =>
-        readChapters.includes(chapter.chapterNumber) &&
-        chapter.artifact
-    )
-    .map((chapter) => ({
-      ...chapter.artifact,
-      artifactKey: `chapter-${chapter.chapterNumber}`,
-      chapterNumber: chapter.chapterNumber,
-    }));
 
     const collectedArtifacts = [...artifacts]
     .sort((a, b) => a.unlockChapter - b.unlockChapter)
@@ -170,6 +162,11 @@ function StoryReader() {
             </section>
           ))}
         </article>
+         {highestReadChapter + 1 < story.chapters.length && (
+          <div className="archive-card">
+            🔒 More chapters will unlock as you continue reading.
+          </div>
+        )}
 
         <aside className="artifact-panel archive-card">
           <p className="archive-eyebrow">Relic cabinet</p>
@@ -188,11 +185,9 @@ function StoryReader() {
             return (
               <div key={a.artifactKey} className="artifact">
                 <strong>{a.title}</strong>
-                {a.chapterNumber && (
-                  <span className="artifact-meta">
-                    Chapter {a.chapterNumber}
-                  </span>
-                )}
+                <span className="artifact-meta">
+                Chapter {a.unlockChapter}
+              </span>
 
                 {revealed ? (
                   <p>{a.content}</p>
@@ -205,6 +200,7 @@ function StoryReader() {
                   </button>
                 )}
               </div>
+              
             );
           })}
         </aside>
