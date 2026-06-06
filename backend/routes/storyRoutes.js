@@ -251,6 +251,43 @@ router.get("/:id/artifacts", authMiddleware, async (req, res) => {
     });
   }
 });
+router.delete("/artifact/:artifactId", authMiddleware, async (req, res) => {
+  try {
+    const artifact = await Artifact.findById(req.params.artifactId);
+
+    if (!artifact) {
+      return res.status(404).json({
+        message: "Artifact not found",
+      });
+    }
+
+    const story = await Story.findById(artifact.storyId);
+
+    if (!story) {
+      return res.status(404).json({
+        message: "Story not found",
+      });
+    }
+
+    if (story.author.toString() !== req.userId) {
+      return res.status(403).json({
+        message: "Not authorized",
+      });
+    }
+
+    await Artifact.findByIdAndDelete(req.params.artifactId);
+
+    res.json({
+      message: "Artifact deleted",
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "Failed to delete artifact",
+    });
+  }
+});
 
 
 

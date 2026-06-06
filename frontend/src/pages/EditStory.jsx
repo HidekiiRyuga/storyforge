@@ -120,7 +120,24 @@ function EditStory() {
     setTitle(chapter.title);
     setContent(chapter.content);
   };
+const deleteArtifact = async (artifactId) => {
+  if (!window.confirm("Delete this artifact?")) {
+    return;
+  }
 
+  try {
+    await API.delete(`/story/artifact/${artifactId}`);
+
+    fetchArtifacts();
+
+  } catch (err) {
+  console.error(err);
+
+  console.log(err.response?.data);
+
+  alert("Failed to delete artifact");
+}
+};
   if (!story) {
     return (
       <div className="archive-page archive-page--narrow">
@@ -201,9 +218,26 @@ function EditStory() {
                     >
                       <strong>🔮 {artifact.title}</strong>
                       <p>{artifact.content}</p>
-                    </div>
-                  ))}
 
+                      <button
+                  onClick={() => deleteArtifact(artifact._id)}
+                  style={{
+                    marginTop: "8px",
+                    background: "#b91c1c",
+                    color: "white",
+                    border: "none",
+                    padding: "5px 12px",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Delete Artifact
+                </button>
+
+                    </div>
+                    
+                  ))}
+                 
                   {isLongChapter && (
                     <button
                       onClick={() => toggleChapterPreview(ch.chapterNumber)}
