@@ -9,7 +9,7 @@ function StoryReader() {
   const [artifacts, setArtifacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [revealedArtifacts, setRevealedArtifacts] = useState([]);
-  const [editingArtifact, setEditingArtifact] = useState(null);
+
 
   const revealedArtifactsKey = `storyforge-revealed-artifacts-${id}`;
 
@@ -121,7 +121,7 @@ function StoryReader() {
                 Chapter {ch.chapterNumber}: {ch.title}
               </h3>
 
-              <p>{ch.content}</p>
+              <p className="chapter-content">{ch.content}</p>
 
               {artifacts
             .filter(
@@ -138,7 +138,13 @@ function StoryReader() {
                   <strong>{artifact.title}</strong>
 
                   {revealed ? (
-                    <p>{artifact.content}</p>
+                    <p
+                    style={{
+                      whiteSpace: "pre-line",
+                    }}
+                  >
+                    {artifact.content}
+                  </p>
                   ) : (
                     <button
                       onClick={() => revealArtifact(artifactKey)}
@@ -162,12 +168,20 @@ function StoryReader() {
               )}
             </section>
           ))}
-        </article>
-         {highestReadChapter + 1 < story.chapters.length && (
-          <div className="archive-card">
-            🔒 More chapters will unlock as you continue reading.
+          {highestReadChapter + 1 < story.chapters.length && (
+            <div
+            style={{
+              marginTop: "24px",
+              padding: "16px",
+              borderTop: "1px solid rgba(74, 48, 23, 0.18)",
+              color: "#594832",
+              fontStyle: "italic",
+            }}
+          >
+            📜 More pages await discovery...
           </div>
         )}
+        </article>
 
         <aside className="artifact-panel archive-card">
           <p className="archive-eyebrow">Relic cabinet</p>

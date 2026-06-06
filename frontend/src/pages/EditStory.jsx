@@ -214,6 +214,14 @@ const updateArtifact = async () => {
                   <p className="archive-copy chapter-preview">
                     {getChapterPreview(ch)}
                   </p>
+                  {isLongChapter && (
+                    <button
+                      onClick={() => toggleChapterPreview(ch.chapterNumber)}
+                      className="text-button"
+                    >
+                      {isExpanded ? "View less" : "View more"}
+                    </button>
+                  )}
                   {artifacts
                   .filter(
                     (artifact) =>
@@ -233,60 +241,68 @@ const updateArtifact = async () => {
                       <p>{artifact.content}</p>
                       <button
                       onClick={() => {
-                          setEditingArtifact(artifact);
-                          setArtifactTitle(artifact.title);
-                          setArtifactContent(artifact.content);
-                        }}
+                        setEditingArtifact(artifact);
+                        setArtifactTitle(artifact.title);
+                        setArtifactContent(artifact.content);
+                      }}
+                      className="archive-button archive-button--quiet"
                     >
-                      Edit Artifact
+                      ✦ Edit Relic
                     </button>
-                    {editingArtifact?._id === artifact._id && (
-                    <div>
-                      <input
-                        value={artifactTitle}
-                        onChange={(e) => setArtifactTitle(e.target.value)}
-                      />
+                   {editingArtifact?._id === artifact._id && (
+                      <div className="artifact-editor">
+                        <h4>✦ Revise Relic</h4>
 
-                      <textarea
-                        value={artifactContent}
-                        onChange={(e) => setArtifactContent(e.target.value)}
-                      />
+                        <div className="archive-form">
+
+                          <div className="archive-field">
+                            <label>Relic Name</label>
+                            <input
+                              className="archive-input"
+                              value={artifactTitle}
+                              onChange={(e) => setArtifactTitle(e.target.value)}
+                            />
+                          </div>
+
+                          <div className="archive-field">
+                            <label>Relic Description</label>
+                            <textarea
+                              className="archive-textarea"
+                              value={artifactContent}
+                              onChange={(e) => setArtifactContent(e.target.value)}
+                            />
+                          </div>
+
+                          <div className="artifact-actions">
+                            <button
+                              onClick={updateArtifact}
+                              className="archive-button archive-button--primary"
+                            >
+                              Save Changes
+                            </button>
+
+                            <button
+                              onClick={() => setEditingArtifact(null)}
+                              className="archive-button archive-button--quiet"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+
+                        </div>
+                      </div>
+                    )}
 
                       <button
-                        onClick={updateArtifact}
-                      >
-                        Save Changes
-                      </button>
-                    </div>
-                  )}
-
-                      <button
-                  onClick={() => deleteArtifact(artifact._id)}
-                  style={{
-                    marginTop: "8px",
-                    background: "#b91c1c",
-                    color: "white",
-                    border: "none",
-                    padding: "5px 12px",
-                    borderRadius: "6px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Delete Artifact
-                </button>
+                    onClick={() => deleteArtifact(artifact._id)}
+                    className="archive-button archive-button--danger"
+                  >
+                    🗑 Discard Relic
+                  </button>
 
                     </div>
                     
                   ))}
-                 
-                  {isLongChapter && (
-                    <button
-                      onClick={() => toggleChapterPreview(ch.chapterNumber)}
-                      className="text-button"
-                    >
-                      {isExpanded ? "View less" : "View more"}
-                    </button>
-                  )}
 
                   <div className="archive-actions">
                     <button

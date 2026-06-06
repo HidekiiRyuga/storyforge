@@ -701,10 +701,10 @@ button {
 }
 
 .artifact {
-  margin-top: 14px;
+  margin-top: 18px;
   border: 1px dashed rgba(74, 48, 23, 0.32);
   border-radius: var(--radius);
-  padding: 14px;
+  padding: 18px;
   background: rgba(255, 246, 221, 0.5);
 }
 
@@ -895,4 +895,33 @@ button {
     flex: 1 1 auto;
     text-align: center;
   }
+}
+.artifact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.artifact-editor {
+  margin-top: 14px;
+  padding: 16px;
+  border: 1px solid rgba(216, 170, 76, 0.18);
+  border-radius: var(--radius);
+  background: rgba(242, 228, 198, 0.05);
+}
+
+.artifact-editor h4 {
+  margin: 0 0 12px;
+  color: #fff6dd;
+  font-family: Cinzel, Georgia, serif;
+}
+.chapter .archive-button--primary {
+  margin-top: 12px;
+}
+.chapter-content {
+  white-space: pre-line;
+  line-height: 2;
+  font-size: 1.05rem;
+  color: #3b2818;
 }
