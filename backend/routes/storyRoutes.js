@@ -2,6 +2,7 @@ import express from "express";
 import Story from "../models/Story.js";
 import User from "../models/User.js";
 import authMiddleware from "../middleware/authMiddleware.js";
+import Artifact from "../models/Artifact.js";
 
 const router = express.Router();
 
