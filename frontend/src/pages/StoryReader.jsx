@@ -96,14 +96,18 @@ function StoryReader() {
       chapterNumber: chapter.chapterNumber,
     }));
 
-  const collectedArtifacts = [
-    ...chapterArtifacts,
-    ...artifacts.map((artifact) => ({
-      ...artifact,
-      artifactKey: `artifact-${artifact._id}`,
-    })),
-  ];
+    const collectedArtifacts = artifacts.map((artifact) => ({
+    ...artifact,
+    artifactKey: `artifact-${artifact._id}`,
+  }));
+  const highestReadChapter =
+  readChapters.length > 0
+    ? Math.max(...readChapters)
+    : 0;
 
+    const visibleChapters = story.chapters.filter(
+      (ch) => ch.chapterNumber <= highestReadChapter + 1
+    );
   return (
     <div className="archive-page">
       <header className="reader-header">
@@ -116,7 +120,7 @@ function StoryReader() {
 
       <div className="reader-layout">
         <article className="reader-scroll archive-card">
-          {story.chapters.map((ch) => (
+         {visibleChapters.map((ch) => (
             <section key={ch.chapterNumber} className="chapter">
               <h3>
                 Chapter {ch.chapterNumber}: {ch.title}
@@ -124,29 +128,33 @@ function StoryReader() {
 
               <p>{ch.content}</p>
 
-                  {readChapters.includes(ch.chapterNumber) &&
-                  ch.artifact && (() => {
-                    const artifact = ch.artifact;
-                    const artifactKey = `chapter-${ch.chapterNumber}`;
-                    const revealed = isArtifactRevealed(artifactKey);
+              {artifacts
+            .filter(
+              (artifact) =>
+                artifact.unlockChapter === ch.chapterNumber &&
+                readChapters.includes(ch.chapterNumber)
+            )
+            .map((artifact) => {
+              const artifactKey = `artifact-${artifact._id}`;
+              const revealed = isArtifactRevealed(artifactKey);
 
-                    return (
-                      <div className="artifact">
-                        <strong>{artifact.title}</strong>
+              return (
+                <div key={artifact._id} className="artifact">
+                  <strong>{artifact.title}</strong>
 
-                        {revealed ? (
-                          <p>{artifact.content}</p>
-                        ) : (
-                          <button
-                            onClick={() => revealArtifact(artifactKey)}
-                            className="archive-button archive-button--primary"
-                          >
-                            Reveal Artifact
-                          </button>
-                        )}
-                      </div>
-                    );
-                  })()}
+                  {revealed ? (
+                    <p>{artifact.content}</p>
+                  ) : (
+                    <button
+                      onClick={() => revealArtifact(artifactKey)}
+                      className="archive-button archive-button--primary"
+                    >
+                      Reveal Artifact
+                    </button>
+                  )}
+                </div>
+              );
+            })}
 
                   
               {!readChapters.includes(ch.chapterNumber) && (

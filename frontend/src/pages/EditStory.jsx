@@ -180,6 +180,10 @@ function EditStory() {
                   <h3>
                     Chapter {ch.chapterNumber}: {ch.title}
                   </h3>
+                  
+                  <p className="archive-copy chapter-preview">
+                    {getChapterPreview(ch)}
+                  </p>
                   {artifacts
                   .filter(
                     (artifact) =>
@@ -199,9 +203,6 @@ function EditStory() {
                       <p>{artifact.content}</p>
                     </div>
                   ))}
-                  <p className="archive-copy chapter-preview">
-                    {getChapterPreview(ch)}
-                  </p>
 
                   {isLongChapter && (
                     <button
